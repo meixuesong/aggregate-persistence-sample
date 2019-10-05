@@ -1,0 +1,2 @@
+# aggregate-persistence-sample
+
