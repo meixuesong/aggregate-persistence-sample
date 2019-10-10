@@ -2,6 +2,7 @@ package com.github.meixuesong.order;
 
 import com.github.meixuesong.aggregatepersistence.Aggregate;
 import com.github.meixuesong.aggregatepersistence.AggregateFactory;
+import com.github.meixuesong.aggregatepersistence.DataObjectUtils;
 import com.github.meixuesong.customer.CustomerRepository;
 import com.github.meixuesong.order.dao.OrderDO;
 import com.github.meixuesong.order.dao.OrderDOMapper;
@@ -86,10 +87,23 @@ public class OrderRepository {
     }
 
     private void updateAggregateRoot(Aggregate<Order> orderAggregate) {
-        Order order = orderAggregate.getRoot();
-        if (orderMapper.updateByPrimaryKey(new OrderDO(order)) != 1) {
-            throw new OptimisticLockException(String.format("Update order (%s) error, it's not found or changed by another user", order.getId()));
-        };
+        //only update changed fields, avoid update all fields
+        OrderDO delta = getOrderDODelta(orderAggregate);
+
+        if (orderMapper.updateByPrimaryKeySelective(delta) != 1) {
+            throw new OptimisticLockException(String.format("Update order (%s) error, it's not found or changed by another user", orderAggregate.getRoot().getId()));
+        }
+    }
+
+    private OrderDO getOrderDODelta(Aggregate<Order> orderAggregate) {
+        OrderDO current = new OrderDO(orderAggregate.getRoot());
+        OrderDO old = new OrderDO(orderAggregate.getRootSnapshot());
+
+        OrderDO delta = new DataObjectUtils().getDelta(old, current);
+        delta.setId(current.getId());
+        delta.setVersion(current.getVersion());
+
+        return delta;
     }
 
     private void insertEntities(Aggregate<Order> orderAggregate) {
