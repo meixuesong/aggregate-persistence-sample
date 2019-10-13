@@ -53,9 +53,9 @@ public class OrderRepository {
             insertNewAggregate(orderAggregate);
         } else if (orderAggregate.isChanged()) {
             updateAggregateRoot(orderAggregate);
-            removeEntities(orderAggregate);
-            updateEntities(orderAggregate);
-            insertEntities(orderAggregate);
+            removeOrderItems(orderAggregate);
+            updateOrderItems(orderAggregate);
+            insertOrderItems(orderAggregate);
         }
     }
 
@@ -99,14 +99,14 @@ public class OrderRepository {
         OrderDO current = new OrderDO(orderAggregate.getRoot());
         OrderDO old = new OrderDO(orderAggregate.getRootSnapshot());
 
-        OrderDO delta = new DataObjectUtils().getDelta(old, current);
+        OrderDO delta = DataObjectUtils.getDelta(old, current);
         delta.setId(current.getId());
         delta.setVersion(current.getVersion());
 
         return delta;
     }
 
-    private void insertEntities(Aggregate<Order> orderAggregate) {
+    private void insertOrderItems(Aggregate<Order> orderAggregate) {
         Collection<OrderItem> newEntities = orderAggregate.findNewEntities(Order::getItems, (item) -> item.getId() == null);
         if (newEntities.size() > 0) {
             List<OrderItemDO> itemDOs = newEntities.stream().map(item -> new OrderItemDO(orderAggregate.getRoot().getId(), item)).collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class OrderRepository {
         }
     }
 
-    private void updateEntities(Aggregate<Order> orderAggregate) {
+    private void updateOrderItems(Aggregate<Order> orderAggregate) {
         Collection<OrderItem> updatedEntities = orderAggregate.findChangedEntities(Order::getItems, OrderItem::getId);
         updatedEntities.stream().forEach((item) -> {
             if (orderItemMapper.updateByPrimaryKey(new OrderItemDO(orderAggregate.getRoot().getId(), item)) != 1) {
@@ -123,7 +123,7 @@ public class OrderRepository {
         });
     }
 
-    private void removeEntities(Aggregate<Order> orderAggregate) {
+    private void removeOrderItems(Aggregate<Order> orderAggregate) {
         Collection<OrderItem> removedEntities = orderAggregate.findRemovedEntities(Order::getItems, OrderItem::getId);
         removedEntities.stream().forEach((item) -> {
             if (orderItemMapper.deleteByPrimaryKey(item.getId()) != 1) {
