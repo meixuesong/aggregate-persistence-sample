@@ -24,7 +24,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public Order findUser(@PathVariable String id) {
+    public Order findOrder(@PathVariable String id) {
         Order order = orderService.findById(id);
 
         return order;
