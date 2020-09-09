@@ -1,11 +1,1 @@
 language: java
-
-addons:
-  sonarcloud:
-    organization: "meixuesong"
-    token:
-      secure: "PnCvoZoIwclCGhF+cdA9FEbOkjkwUkiJvG3gczJfIUVLkpHDQ5bI/dfF56/ON0k9jrERoazIi9EiMNn4k3BjKwouEwL+kb6LYo7y5Whk62xDX8bekKwaW+a7zENyB/e8ydO5BvVCh9h6ZIAdXtKokChbG8GcztpxHQ+596vgPhOj6kGKzoK26tVtUYlSAfRe1w/4nWQKijtw0yRYXJB/1t1gyyTZFhNaFytZ7WlWk4pzhsAtZ8et2QltQRY4nxuRzZrqqQDp94EpK+ejRejV9xHiSNgWHmL+NXbbIynpsXJ5O/yAxfGHO9/F5bS8A0zGfvN8yDZPGThsKBvcwxk1YnrhKb0Z8dwJtr1IrXs+D2JkQskI+5tf8DLp+1D7XI5m4pXVgpqOA29Zm5rRF+6m7xOCohhS6io3s0AehrGO1EGUW2WkGtq20gyz6ajMo9UyhrAbzp2QR3W6MYenSsgLSupQ5Hu+dlOixEzWItydXiXKYSKJR3OzGKqwNt1Dn15/80CyPgRWtWa5N53ejGb6ajjMrejxkv9HDUs4tod1964xRq7VD4ivCuWeHYVr2IQYvvsq9L0HnPk3n/tE3uKz58oxHh3TlG3hlrY9hoAxJ6yeRZscdcmvVIcXLu6oAe7j0chpsRD5PmycPcPN+PgCqXPvK0sJqZ0LVWQzlXQzn90="
-
-script:
-  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=meixuesong_aggregate-persistence-sample
