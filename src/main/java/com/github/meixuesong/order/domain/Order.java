@@ -4,6 +4,7 @@ import com.github.meixuesong.aggregatepersistence.Versionable;
 import com.github.meixuesong.customer.Customer;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class Order implements Versionable {
+public class Order implements Versionable, Serializable {
     private String id;
     private Date createTime;
     private Customer customer;

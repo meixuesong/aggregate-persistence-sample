@@ -1,9 +1,11 @@
 package com.github.meixuesong.order.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 @Repository
@@ -16,7 +18,7 @@ public interface OrderItemDOMapper {
 
     OrderItemDO selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(OrderItemDO record);
+    int updateByPrimaryKeySelective(@Param("orderItemDO") OrderItemDO record, @Param("changedFields") Set<String> changedFields);
 
     int updateByPrimaryKey(OrderItemDO record);
 

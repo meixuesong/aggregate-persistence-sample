@@ -89,23 +89,23 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.github.meixuesong.order.dao.OrderItemDO">
+  <update id="updateByPrimaryKeySelective">
     update order_item
     <set>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=VARCHAR},
+      <if test="('orderId' in changedFields)">
+        order_id = #{orderItemDO.orderId,jdbcType=VARCHAR},
       </if>
-      <if test="prodId != null">
-        prod_id = #{prodId,jdbcType=VARCHAR},
+      <if test="('prodId' in changedFields)">
+        prod_id = #{orderItemDO.prodId,jdbcType=VARCHAR},
       </if>
-      <if test="amount != null">
-        amount = #{amount,jdbcType=DECIMAL},
+      <if test="('amount' in changedFields)">
+        amount = #{orderItemDO.amount,jdbcType=DECIMAL},
       </if>
-      <if test="subTotal != null">
-        sub_total = #{subTotal,jdbcType=DECIMAL},
+      <if test="('subTotal' in changedFields)">
+        sub_total = #{orderItemDO.subTotal,jdbcType=DECIMAL},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{orderItemDO.id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.github.meixuesong.order.dao.OrderItemDO">
     update order_item

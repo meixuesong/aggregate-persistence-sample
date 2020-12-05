@@ -3,11 +3,12 @@ package com.github.meixuesong.order.domain;
 import com.github.meixuesong.product.Product;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Data
-public class OrderItem {
+public class OrderItem implements Serializable {
     private Long id;
     private Product product;
     private BigDecimal amount;

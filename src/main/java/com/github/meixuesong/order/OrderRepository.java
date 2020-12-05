@@ -2,6 +2,7 @@ package com.github.meixuesong.order;
 
 import com.github.meixuesong.aggregatepersistence.Aggregate;
 import com.github.meixuesong.aggregatepersistence.AggregateFactory;
+import com.github.meixuesong.aggregatepersistence.ChangedEntity;
 import com.github.meixuesong.aggregatepersistence.DataObjectUtils;
 import com.github.meixuesong.customer.CustomerRepository;
 import com.github.meixuesong.order.dao.OrderDO;
@@ -19,6 +20,7 @@ import javax.persistence.OptimisticLockException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -88,10 +90,11 @@ public class OrderRepository {
 
     private void updateAggregateRoot(Aggregate<Order> orderAggregate) {
         //only update changed fields, avoid update all fields
-        OrderDO delta = getOrderDODelta(orderAggregate);
-
-        if (orderMapper.updateByPrimaryKeySelective(delta) != 1) {
-            throw new OptimisticLockException(String.format("Update order (%s) error, it's not found or changed by another user", orderAggregate.getRoot().getId()));
+        OrderDO newOrderDO = new OrderDO(orderAggregate.getRoot());
+        Set<String> changedFields = DataObjectUtils.getChangedFields(orderAggregate.getRootSnapshot(), orderAggregate.getRoot());
+        if (orderMapper.updateByPrimaryKeySelective(newOrderDO, changedFields) != 1) {
+            throw new OptimisticLockException(String.format("Update order (%s) error, it's not found or changed by another user",
+                    orderAggregate.getRoot().getId()));
         }
     }
 
@@ -115,12 +118,14 @@ public class OrderRepository {
     }
 
     private void updateOrderItems(Aggregate<Order> orderAggregate) {
-        Collection<OrderItem> updatedEntities = orderAggregate.findChangedEntities(Order::getItems, OrderItem::getId);
-        updatedEntities.stream().forEach((item) -> {
-            if (orderItemMapper.updateByPrimaryKey(new OrderItemDO(orderAggregate.getRoot().getId(), item)) != 1) {
-                throw new OptimisticLockException(String.format("Update order item (%d) error, it's not found", item.getId()));
+        Collection<ChangedEntity<OrderItem>> entityPairs = orderAggregate.findChangedEntitiesWithOldValues(Order::getItems, OrderItem::getId);
+        for (ChangedEntity<OrderItem> pair : entityPairs) {
+            Set<String> changedFields = DataObjectUtils.getChangedFields(pair.getOldEntity(), pair.getNewEntity());
+            OrderItemDO orderItemDO = new OrderItemDO(orderAggregate.getRoot().getId(), pair.getNewEntity());
+            if (orderItemMapper.updateByPrimaryKeySelective(orderItemDO, changedFields) != 1) {
+                throw new OptimisticLockException(String.format("Update order item (%d) error, it's not found", orderItemDO.getId()));
             }
-        });
+        }
     }
 
     private void removeOrderItems(Aggregate<Order> orderAggregate) {

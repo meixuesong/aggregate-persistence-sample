@@ -76,27 +76,27 @@
         1,
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.github.meixuesong.order.dao.OrderDO">
+  <update id="updateByPrimaryKeySelective">
     update sale_order
     <set>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      <if test="('createTime' in changedFields)">
+        create_time = #{orderDO.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="customerId != null">
-        customer_id = #{customerId,jdbcType=VARCHAR},
+      <if test="('customer' in changedFields)">
+        customer_id = #{orderDO.customerId,jdbcType=VARCHAR},
       </if>
-      <if test="totalPrice != null">
-        total_price = #{totalPrice,jdbcType=DECIMAL},
+      <if test="('totalPrice' in changedFields)">
+        total_price = #{orderDO.totalPrice,jdbcType=DECIMAL},
       </if>
-      <if test="totalPayment != null">
-        total_payment = #{totalPayment,jdbcType=DECIMAL},
+      <if test="('totalPayment' in changedFields)">
+        total_payment = #{orderDO.totalPayment,jdbcType=DECIMAL},
       </if>
-      <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
+      <if test="('status' in changedFields)">
+        status = #{orderDO.status,jdbcType=TINYINT},
       </if>
         version = version + 1,
     </set>
-    where id = #{id,jdbcType=VARCHAR} and version = #{version,jdbcType=INTEGER}
+    where id = #{orderDO.id,jdbcType=VARCHAR} and version = #{orderDO.version,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.github.meixuesong.order.dao.OrderDO">
     update sale_order

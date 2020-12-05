@@ -2,10 +2,11 @@ package com.github.meixuesong.product;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-public class Product {
+public class Product implements Serializable {
     private String id;
     private String name;
     private BigDecimal price;
