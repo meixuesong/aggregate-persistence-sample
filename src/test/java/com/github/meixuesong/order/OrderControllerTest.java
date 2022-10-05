@@ -8,7 +8,7 @@ import com.github.meixuesong.order.api.OrderItemRequest;
 import com.github.meixuesong.order.domain.Order;
 import com.github.meixuesong.order.domain.OrderStatus;
 import org.assertj.core.data.Offset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
